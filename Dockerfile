@@ -19,6 +19,12 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Composerのインストール
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Node.jsとnpmのインストール
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # 作業ディレクトリを設定
 WORKDIR /var/www/html
 
