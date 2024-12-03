@@ -56,7 +56,7 @@ services:
 
 volumes:
   dbdata:
-  custom_dbdata:
+  prod_dbdata:
     driver: local
     driver_opts:
       type: none
