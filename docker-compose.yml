@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app:
     build:
@@ -6,7 +8,17 @@ services:
     container_name: laravel_app
     working_dir: /var/www/html
     volumes:
-      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - ./:/var/www/html # ソースコードをマウント
+    environment:
+      - APP_ENV=${APP_ENV:-development}
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=laravel
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=secret
     networks:
       - laravel
     depends_on:
@@ -19,6 +31,8 @@ services:
     volumes:
       - ./:/var/www/html
     command: ["npm", "run", "dev"]
+    environment:
+      - APP_ENV=${APP_ENV:-development}
     networks:
       - laravel
     depends_on:
@@ -32,10 +46,10 @@ services:
     depends_on:
       - app
     ports:
-      - "8080:80"
+      - "8080:80" # ホストの8080ポートをコンテナの80ポートにマッピング
     volumes:
-      - ./:/var/www/html
       - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./:/var/www/html
     networks:
       - laravel
 
@@ -65,3 +79,4 @@ volumes:
 
 networks:
   laravel:
+    driver: bridge
