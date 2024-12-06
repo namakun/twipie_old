@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# エラーが発生したら停止
+set -e
+
 # 環境変数に応じて Composer のインストールオプションを設定
 if [ "$APP_ENV" = "production" ]; then
     composer install --optimize-autoloader --no-dev --no-interaction

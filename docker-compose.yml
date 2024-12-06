@@ -10,7 +10,7 @@ services:
     volumes:
       - ./storage:/var/www/html/storage
       - ./bootstrap/cache:/var/www/html/bootstrap/cache
-      - ./:/var/www/html # ソースコードをマウント
+      - ${APP_SOURCE_VOLUME:-appdata}:/var/www/html
     environment:
       - APP_ENV=${APP_ENV:-development}
       - DB_CONNECTION=mysql
@@ -29,7 +29,7 @@ services:
     container_name: npm_dev
     working_dir: /var/www/html
     volumes:
-      - ./:/var/www/html
+      - ${APP_SOURCE_VOLUME:-appdata}:/var/www/html
     command: ["npm", "run", "dev"]
     environment:
       - APP_ENV=${APP_ENV:-development}
@@ -49,7 +49,7 @@ services:
       - "8080:80" # ホストの8080ポートをコンテナの80ポートにマッピング
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
-      - ./:/var/www/html
+      - ${APP_SOURCE_VOLUME:-appdata}:/var/www/html
     networks:
       - laravel
 
@@ -76,6 +76,7 @@ volumes:
       type: none
       device: /mnt/docker-volumes/dbdata
       o: bind
+  appdata:
 
 networks:
   laravel:
