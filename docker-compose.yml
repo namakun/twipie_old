@@ -10,7 +10,6 @@ services:
     volumes:
       - ./storage:/var/www/html/storage
       - ./bootstrap/cache:/var/www/html/bootstrap/cache
-      - ${APP_SOURCE_VOLUME}:/var/www/html
     environment:
       - APP_ENV=${APP_ENV:-development}
       - DB_CONNECTION=mysql
