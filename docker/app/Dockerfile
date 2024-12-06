@@ -1,7 +1,7 @@
 # ベースイメージとしてPHP 8.2-FPMを使用
 FROM php:8.2-fpm
 
-# システムパッケージのインストール
+# 必要なパッケージをインストール
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -27,11 +27,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # 作業ディレクトリを設定
 WORKDIR /var/www/html
 
-# ソースコードをコピー
+# Laravelプロジェクトのソースコードをすべてコピー
 COPY . /var/www/html
 
 # パーミッションの設定
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # エントリーポイントスクリプトの追加
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -40,7 +41,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # エントリーポイントを設定
 ENTRYPOINT ["entrypoint.sh"]
 
-# ポートの公開（必要に応じて）
+# ポートの公開
 EXPOSE 9000
 
 # PHP-FPMを起動
