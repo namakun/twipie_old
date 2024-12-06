@@ -28,6 +28,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # 作業ディレクトリを設定
 WORKDIR /var/www/html
 
+# プロジェクトのソースコードをコピー
+COPY . /var/www/html
+
 # パーミッションの設定
 RUN chown -R www-data:www-data /var/www/html
 
