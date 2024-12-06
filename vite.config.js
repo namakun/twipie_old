@@ -1,3 +1,5 @@
+import { defineConfig } from 'vite';
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -6,7 +8,7 @@ export default defineConfig({
         }),
     ],
     server: {
-        host: '0.0.0.0', // 全てのネットワークインターフェースで接続を許可
-        port: 5173,      // 使用するポート
+        host: '0.0.0.0',
+        port: 5173,
     },
 });
