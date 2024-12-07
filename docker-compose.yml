@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
-    container_name: laravel_app
+    container_name: twipie_app
     working_dir: /var/www/html
     environment:
       APP_ENV: ${APP_ENV}
@@ -25,7 +25,7 @@ services:
       context: .
       dockerfile: server.Dockerfile
       target: production
-    container_name: laravel_webserver
+    container_name: twipie_webserver
     depends_on:
       - app
     ports:
@@ -35,7 +35,7 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: laravel_db
+    container_name: twipie_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
