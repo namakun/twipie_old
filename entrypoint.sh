@@ -12,9 +12,9 @@ if [ ! -f /var/www/html/.env ]; then
 
     # 必要に応じて環境変数を上書き
     # sed -i "s|APP_ENV=local|APP_ENV=${APP_ENV}|g" /var/www/html/.env
-    sed -i "s|APP_KEY=|APP_KEY=${APP_KEY}|g" /var/www/html/.env
-    sed -i "s|APP_URL=|APP_URL=${APP_URL}|g" /var/www/html/.env
-    sed -i "s|APP_ENV=|APP_ENV=${APP_ENV}|g" /var/www/html/.env
+    sed -i "s|APP_KEY=.*|APP_KEY=${APP_KEY}|g" /var/www/html/.env
+    sed -i "s|APP_URL=.*|APP_URL=${APP_URL}|g" /var/www/html/.env
+    sed -i "s|APP_ENV=.*|APP_ENV=${APP_ENV}|g" /var/www/html/.env
     # sed -i "s|DB_HOST=127.0.0.1|DB_HOST=${DB_HOST}|g" /var/www/html/.env
     # sed -i "s|DB_DATABASE=laravel|DB_DATABASE=${DB_DATABASE}|g" /var/www/html/.env
     # sed -i "s|DB_USERNAME=root|DB_USERNAME=${DB_USERNAME}|g" /var/www/html/.env
