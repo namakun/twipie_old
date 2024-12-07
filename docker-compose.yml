@@ -19,7 +19,10 @@ services:
       - db
 
   webserver:
-    image: nginx:alpine
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+      target: production
     container_name: laravel_webserver
     depends_on:
       - app
@@ -53,3 +56,4 @@ volumes:
 
 networks:
   laravel:
+    driver: bridge

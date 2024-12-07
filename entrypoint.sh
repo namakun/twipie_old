@@ -14,6 +14,8 @@ else
     composer install --prefer-dist --no-interaction
 fi
 
+mkdir -p /var/www/html/storage/framework/cache /var/www/html/storage/framework/views
+
 # Laravelキャッシュ関連のコマンド
 if [ "$APP_ENV" = "production" ]; then
     php artisan config:cache

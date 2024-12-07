@@ -25,7 +25,8 @@ WORKDIR /var/www/html
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# 開発ステージ
+RUN chown -R www-data:www-data /var/www/html
+
 FROM base AS development
 
 ENTRYPOINT ["entrypoint.sh"]

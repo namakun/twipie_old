@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: laravel_app_dev
+    container_name: laravel_app
     working_dir: /var/www/html
     environment:
       APP_ENV: development
@@ -35,12 +35,15 @@ services:
       - "5173:5173"
 
   webserver:
-    image: nginx:alpine
-    container_name: laravel_webserver_dev
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+      target: development
+    container_name: laravel_webserver
     depends_on:
       - app
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - ./:/var/www/html
     networks:
@@ -48,7 +51,7 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: laravel_db_dev
+    container_name: laravel_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
@@ -69,5 +72,7 @@ volumes:
       device: ./docker/volumes/dbdata
       o: bind
 
+
 networks:
   laravel:
+    driver: bridge
