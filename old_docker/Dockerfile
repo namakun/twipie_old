@@ -1,5 +1,7 @@
-FROM php:8.2-fpm AS base
+# ベースイメージとしてPHP 8.2-FPMを使用
+FROM php:8.2-fpm
 
+# システムパッケージのインストール
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,29 +13,26 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# PHP拡張モジュールのインストール
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+# Composerのインストール
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Node.jsとnpmのインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# 作業ディレクトリを設定
 WORKDIR /var/www/html
 
-COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# パーミッションの設定
+RUN chown -R www-data:www-data /var/www/html
 
-# 開発ステージ
-FROM base AS development
+# ポートの公開（必要に応じて）
+EXPOSE 9000
 
-ENTRYPOINT ["entrypoint.sh"]
-CMD ["php-fpm"]
-
-FROM base AS production
-
-COPY . /var/www/html
-
-ENTRYPOINT ["entrypoint.sh"]
+# PHP-FPMを起動
 CMD ["php-fpm"]

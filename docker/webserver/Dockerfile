@@ -2,8 +2,7 @@
 FROM nginx:alpine
 
 # NGINXの設定ファイルをコンテナ内にコピー
-COPY ./etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-
+COPY ./docker/webserver/nginx/conf.d/default.conf /etc/nginx/conf.d/
 # Laravelの公開ディレクトリをコピー
 COPY ./public /var/www/html/public
 

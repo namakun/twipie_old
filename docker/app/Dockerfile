@@ -31,19 +31,17 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # パーミッションの設定
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html
 
 # エントリーポイントスクリプトの追加
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./docker/app/usr/local/bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # エントリーポイントを設定
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # ポートの公開
 EXPOSE 9000
 
 # PHP-FPMを起動
 CMD ["php-fpm"]
-

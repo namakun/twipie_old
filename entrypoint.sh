@@ -3,23 +3,29 @@
 # エラーが発生したら停止
 set -e
 
-# 環境変数に応じて Composer のインストールオプションを設定
+echo "Starting container in $APP_ENV environment"
+
+# 環境ごとに composer install を実行
 if [ "$APP_ENV" = "production" ]; then
+    echo "Running composer install for production..."
     composer install --optimize-autoloader --no-dev --no-interaction
 else
+    echo "Running composer install for development..."
     composer install --prefer-dist --no-interaction
 fi
 
-# 環境変数に応じて NPM のインストールおよびビルドを設定
-if [ "$APP_ENV" != "production" ]; then
-    npm install
-    npm run dev &
+# Laravelキャッシュ関連のコマンド
+if [ "$APP_ENV" = "production" ]; then
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
 else
-    npm install
-    npm run build
+    php artisan config:clear
+    php artisan route:clear
+    php artisan view:clear
 fi
 
-# ストレージおよびキャッシュディレクトリのパーミッション設定
+# ストレージとキャッシュディレクトリの権限設定
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # PHP-FPM を起動

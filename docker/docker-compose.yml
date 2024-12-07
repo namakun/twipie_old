@@ -1,15 +1,12 @@
-version: '3.9'
-
 services:
   app:
     build:
-      context: .
-      dockerfile: app/Dockerfile
+      context: ../
+      dockerfile: ./docker/app/Dockerfile
     container_name: laravel_app
     working_dir: /var/www/html
     volumes:
-      - ./storage:/var/www/html/storage:delegated
-      - ./bootstrap/cache:/var/www/html/bootstrap/cache:delegated
+      - ../:/var/www/html
     environment:
       - APP_ENV=${APP_ENV:-production}
       - DB_CONNECTION=mysql
@@ -25,15 +22,15 @@ services:
 
   webserver:
     build:
-      context: .
-      dockerfile: webserver/nginx.Dockerfile
+      context: ../
+      dockerfile: ./docker/webserver/Dockerfile
     container_name: laravel_webserver
     depends_on:
       - app
     ports:
       - "8080:80"
     volumes:
-      - ./public:/var/www/html/public:delegated
+      - ../public:/var/www/html/public
     networks:
       - laravel
 
@@ -48,7 +45,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ${DB_VOLUME:-dbdata}:/var/lib/mysql:delegated
+      - ${DB_VOLUME:-dbdata}:/var/lib/mysql
     networks:
       - laravel
 
@@ -61,6 +58,8 @@ services:
       - APP_ENV=${APP_ENV:-development}
     networks:
       - laravel
+    volumes:
+      - ../:/var/www/html:delegated
     depends_on:
       - app
     ports:
