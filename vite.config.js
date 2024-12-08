@@ -18,6 +18,13 @@ export default defineConfig(({ mode }) => {
         build: {
             manifest: true,
             outDir: 'public/build',
+            rollupOptions: {
+                output: {
+                    entryFileNames: 'assets/[name]-[hash].js',
+                    chunkFileNames: 'assets/[name]-[hash].js',
+                    assetFileNames: 'assets/[name]-[hash][extname]',
+                },
+            },
         },
         base: isProduction
             ? process.env.ASSET_URL || '/'
