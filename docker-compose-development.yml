@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: laravel_app
+    container_name: twipie_app
     working_dir: /var/www/html
     environment:
       APP_ENV: development
@@ -16,19 +16,19 @@ services:
     volumes:
       - ./:/var/www/html
     networks:
-      - laravel
+      - twipie
     depends_on:
       - db
 
   npm:
     image: node:20-alpine
-    container_name: npm_dev
+    container_name: npm
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
     command: ["npm", "run", "dev"]
     networks:
-      - laravel
+      - twipie
     depends_on:
       - app
     ports:
@@ -39,7 +39,7 @@ services:
       context: .
       dockerfile: server.Dockerfile
       target: development
-    container_name: laravel_webserver
+    container_name: twipie_webserver
     depends_on:
       - app
     ports:
@@ -47,11 +47,11 @@ services:
     volumes:
       - ./:/var/www/html
     networks:
-      - laravel
+      - twipie
 
   db:
     image: mysql:8.0
-    container_name: laravel_db
+    container_name: twipie_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
@@ -62,7 +62,7 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - laravel
+      - twipie
 
 volumes:
   dbdata:
@@ -74,5 +74,5 @@ volumes:
 
 
 networks:
-  laravel:
+  twipie:
     driver: bridge

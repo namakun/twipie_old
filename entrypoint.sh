@@ -27,26 +27,27 @@ if [ ! -f /var/www/html/.env ]; then
 
 fi
 
-# 環境ごとに composer install を実行
+mkdir -p /var/www/html/storage/framework/cache /var/www/html/storage/framework/views
+
+# 環境別の設定を実行
 if [ "$APP_ENV" = "production" ]; then
     echo "Running composer install for production..."
     composer install --optimize-autoloader --no-dev --no-interaction
-else
-    echo "Running composer install for development..."
-    composer install --prefer-dist --no-interaction
-fi
 
-mkdir -p /var/www/html/storage/framework/cache /var/www/html/storage/framework/views
-
-# Laravelキャッシュ関連のコマンド
-if [ "$APP_ENV" = "production" ]; then
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
+
+    npm install && npm run build
 else
+    echo "Running composer install for development..."
+    composer install --prefer-dist --no-interaction
+
     php artisan config:clear
     php artisan route:clear
     php artisan view:clear
+
+    npm install && npm run dev &
 fi
 
 # ストレージとキャッシュディレクトリの権限設定
