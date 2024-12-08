@@ -18,11 +18,6 @@ export default defineConfig(({ mode }) => {
         build: {
             manifest: true,
             outDir: 'public/build',
-            rollupOptions: {
-                input: {
-                    app: 'resources/js/app.js',
-                },
-            },
         },
         base: isProduction
             ? process.env.ASSET_URL || '/'
