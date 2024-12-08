@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('twipie.png') }}" alt="Logo" class="h-9 w-auto" />
+                        <img src="{{ secure_asset('twipie.png') }}" alt="Logo" class="h-9 w-auto" />
                     </a>
                 </div>
 

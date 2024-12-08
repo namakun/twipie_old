@@ -1,1 +1,1 @@
-<img src="{{ asset('twipie.png') }}" alt="twipie" {{ $attributes }}>
+<img src="{{ secure_asset('twipie.png') }}" alt="twipie" {{ $attributes }}>
