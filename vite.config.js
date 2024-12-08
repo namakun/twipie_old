@@ -15,6 +15,17 @@ export default defineConfig(({ mode }) => {
             host: '0.0.0.0',
             port: 5173,
         },
+        build: {
+            manifest: true,
+            outDir: 'public/build',
+            rollupOptions: {
+                output: {
+                    entryFileNames: 'assets/[name]-[hash].js',
+                    chunkFileNames: 'assets/[name]-[hash].js',
+                    assetFileNames: 'assets/[name]-[hash][extname]',
+                },
+            },
+        },
         base: isProduction
             ? process.env.ASSET_URL || '/'
             : '/', // 本番環境ではASSET_URLを優先
