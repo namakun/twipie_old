@@ -1,1 +1,1 @@
-<img src="{{ secure_asset('twipie.png') }}" alt="twipie" {{ $attributes }}>
+<img src="{{ app()->environment('production') ? secure_asset('twipie.png') : asset('twipie.png') }}" alt="twipie" {{ $attributes }}>
