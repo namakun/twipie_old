@@ -38,7 +38,6 @@ services:
     build:
       context: .
       dockerfile: server.Dockerfile
-      target: development
     container_name: twipie_webserver
     depends_on:
       - app
@@ -61,15 +60,6 @@ services:
       - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
-    networks:
-      - twipie
-
-  mailhog:
-    image: mailhog/mailhog
-    container_name: mailhog
-    ports:
-      - "1025:1025"
-      - "8025:8025"
     networks:
       - twipie
 
