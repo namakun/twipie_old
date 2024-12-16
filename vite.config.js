@@ -18,6 +18,8 @@ export default defineConfig(({ mode }) => {
         build: {
             manifest: true,
             outDir: 'public/build',
+            emptyOutDir: true,
+            assetsDir: 'assets',
             rollupOptions: {
                 output: {
                     entryFileNames: 'assets/[name]-[hash].js',
