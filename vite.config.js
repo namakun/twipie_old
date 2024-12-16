@@ -16,11 +16,6 @@ export default defineConfig(({ mode }) => {
             host: '0.0.0.0',
             port: 5173,
         },
-        build: {
-            manifest: true,
-            outDir: 'public/build',
-            emptyOutDir: true,
-        },
         base: isProduction
             ? process.env.ASSET_URL || '/'
             : '/',
