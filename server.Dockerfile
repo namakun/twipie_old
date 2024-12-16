@@ -8,6 +8,7 @@ WORKDIR /var/www/html
 COPY package.json package-lock.json ./
 COPY resources ./resources
 COPY vite.config.js ./
+COPY ./public /var/www/html/public
 
 # 依存関係をインストールしてビルド
 RUN npm install
