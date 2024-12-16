@@ -2,13 +2,14 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 
 export default defineConfig(({ mode }) => {
-    const isProduction = mode === 'production';
+    const isProduction = (mode === 'production');
 
     return {
         plugins: [
             laravel({
                 input: ['resources/css/app.css', 'resources/js/app.js'],
                 refresh: true,
+                buildDirectory: 'build',
             }),
         ],
         server: {
@@ -19,17 +20,10 @@ export default defineConfig(({ mode }) => {
             manifest: true,
             outDir: 'public/build',
             emptyOutDir: true,
-            assetsDir: 'assets',
-            rollupOptions: {
-                output: {
-                    entryFileNames: 'assets/[name]-[hash].js',
-                    chunkFileNames: 'assets/[name]-[hash].js',
-                    assetFileNames: 'assets/[name]-[hash][extname]',
-                },
-            },
         },
         base: isProduction
             ? process.env.ASSET_URL || '/'
-            : '/', // 本番環境ではASSET_URLを優先
+            : '/',
     };
-});
+}
+);
