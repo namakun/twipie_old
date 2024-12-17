@@ -6,6 +6,9 @@ services:
       target: development
     container_name: twipie_app
     working_dir: /var/www/html
+    ports:
+      - "80:80"
+      - "5173:5173"
     environment:
       APP_ENV: development
       DB_HOST: db
@@ -19,34 +22,6 @@ services:
       - twipie
     depends_on:
       - db
-
-  npm:
-    image: node:20-alpine
-    container_name: npm
-    working_dir: /var/www/html
-    volumes:
-      - ./:/var/www/html
-    command: ["npm", "run", "dev"]
-    networks:
-      - twipie
-    depends_on:
-      - app
-    ports:
-      - "5173:5173"
-
-  webserver:
-    build:
-      context: .
-      dockerfile: server.Dockerfile
-    container_name: twipie_webserver
-    depends_on:
-      - app
-    ports:
-      - "80:80"
-    volumes:
-      - ./:/var/www/html
-    networks:
-      - twipie
 
   db:
     image: mysql:8.0

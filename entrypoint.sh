@@ -31,27 +31,19 @@ mkdir -p /var/www/html/storage/framework/cache /var/www/html/storage/framework/v
 
 # 環境別の設定を実行
 if [ "$APP_ENV" = "production" ]; then
-    echo "Running composer install for production..."
-    composer install --optimize-autoloader --no-dev --no-interaction
-
+    echo "Running production setup..."
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
-
-    npm install && npm run build
 else
-    echo "Running composer install for development..."
-    composer install --prefer-dist --no-interaction
-
+    echo "Running development setup..."
     php artisan config:clear
     php artisan route:clear
     php artisan view:clear
-
-    npm install && npm run dev &
 fi
 
 # ストレージとキャッシュディレクトリの権限設定
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# PHP-FPM を起動
+# コンテナの起動コマンドを実行
 exec "$@"
