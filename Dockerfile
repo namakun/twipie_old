@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    nginx \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -34,33 +33,51 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 RUN chown -R www-data:www-data /var/www/html
 
+# 開発用ステージ
+FROM base AS development
+
+# 必要なファイルをコピー
+COPY . /var/www/html
+
+# Nginxの追加
+RUN apt-get update && apt-get install -y nginx
+COPY ./nginx/conf.d/default-dev.conf /etc/nginx/conf.d/default.conf
+
+# 依存関係のインストール
+RUN composer install --prefer-dist --no-interaction
+RUN npm install
+
+# ポート公開
+EXPOSE 80 5173
+
+# Nginx、PHP-FPM、Viteを同時に起動
+CMD ["sh", "-c", "php-fpm & npm run dev & nginx -g 'daemon off;'"]
+
 # 本番用ビルドステージ
 FROM base AS builder
 
-# composer.json と composer.lock を先にコピー
-COPY composer.json composer.lock /var/www/html/
-
-# 依存関係のインストール
-RUN composer install --optimize-autoloader --no-dev --no-interaction --no-scripts
-
-# アプリケーションコードをコピー
+# 必要なファイルをコピー
 COPY . /var/www/html
 
-# フロントエンドのビルド
+# 本番用の依存関係インストールとビルド
+RUN composer install --optimize-autoloader --no-dev --no-interaction
 RUN npm install
 RUN npm run build
 
 # 本番用ステージ
 FROM base AS production
 
-# Nginx設定を追加
+# Nginx設定をコピー
 COPY ./nginx/conf.d/default-prod.conf /etc/nginx/conf.d/default.conf
 
-# アプリケーションコードを追加
+# PHP-FPM用の設定
 COPY --from=builder /var/www/html /var/www/html
+COPY --from=builder /usr/local/bin/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # 公開ポート
 EXPOSE 80
 
-# NginxとPHP-FPMの起動
-CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+# Entrypointの実行
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
