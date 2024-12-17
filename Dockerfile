@@ -82,6 +82,7 @@ RUN apt-get update && apt-get install -y nginx
 COPY --from=builder /var/www/html /var/www/html
 
 # 本番用 Nginx 設定
+RUN rm -f /etc/nginx/conf.d/default.conf
 COPY ./nginx/conf.d/default-prod.conf /etc/nginx/conf.d/default.conf
 
 # エントリポイントスクリプトを再度配置（builder からコピーでも可）
