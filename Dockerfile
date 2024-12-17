@@ -57,7 +57,7 @@ CMD ["sh", "-c", "php-fpm & npm run dev & nginx -g 'daemon off;'"]
 FROM base AS builder
 
 # 必要なファイルをコピー
-COPY . /code
+COPY . /var/www/html
 
 # 本番用の依存関係インストールとビルド
 RUN composer install --optimize-autoloader --no-dev --no-interaction
@@ -71,7 +71,7 @@ FROM nginx:alpine AS production
 COPY ./nginx/conf.d/default-prod.conf /etc/nginx/conf.d/default.conf
 
 # PHP-FPM用の設定
-COPY --from=builder /code /var/www/html
+COPY --from=builder /var/www/html /var/www/html
 COPY --from=builder /usr/local/bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
