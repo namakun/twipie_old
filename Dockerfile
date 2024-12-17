@@ -60,7 +60,7 @@ FROM base AS builder
 COPY . /var/www/html
 
 # 本番用の依存関係インストールとビルド
-RUN composer install --optimize-autoloader --no-dev --no-interaction
+RUN composer install --optimize-autoloader --no-dev --no-interaction --no-scripts
 RUN npm install
 RUN npm run build
 
