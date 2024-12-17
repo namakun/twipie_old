@@ -10,8 +10,8 @@ echo "APP_ENV=${APP_ENV}"
 echo "APP_KEY=${APP_KEY}"
 echo "APP_URL=${APP_URL}"
 
-# 本番環境で .env が存在しない場合は作成
-if [ ! -f /var/www/html/.env ]; then
+# 本番環境で .env が存在しない場合は自動作成
+if [ "$APP_ENV" = "production" ] && [ ! -f /var/www/html/.env ]; then
     echo "Generating .env file from .env.example"
     cp /var/www/html/.env.example /var/www/html/.env
 
@@ -27,9 +27,10 @@ if [ ! -f /var/www/html/.env ]; then
     sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD}|g" /var/www/html/.env
 fi
 
+# キャッシュ用ディレクトリの作成
 mkdir -p /var/www/html/storage/framework/cache /var/www/html/storage/framework/views
 
-# 環境別の設定を実行
+# 環境ごとの設定
 if [ "$APP_ENV" = "production" ]; then
     echo "Running production setup..."
     php artisan config:cache
@@ -42,8 +43,8 @@ else
     php artisan view:clear
 fi
 
-# ストレージとキャッシュディレクトリの権限設定
+# パーミッションの設定
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# コンテナの起動コマンドを実行
+# 最後に CMD (または docker run の引数) を実行
 exec "$@"

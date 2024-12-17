@@ -1,7 +1,9 @@
-# ベースイメージ（PHP + Node.jsを含む）
+# ==========================
+# ベースステージ (PHP + Node.js)
+# ==========================
 FROM php:8.2-fpm AS base
 
-# 必要なパッケージをインストール
+# 必要パッケージをインストール
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -13,13 +15,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# PHP拡張のインストール
+# PHP拡張をインストール
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Composerの追加
+# Composer のコピー
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Node.jsのインストール
+# Node.js (20.x 系) をインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
@@ -27,57 +29,66 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 WORKDIR /var/www/html
 
-# Entrypoint
+# エントリポイントスクリプトを配置
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
 RUN chown -R www-data:www-data /var/www/html
 
-# 開発用ステージ
+# ==========================
+# 開発環境ステージ
+# ==========================
 FROM base AS development
 
-# 必要なファイルをコピー
+# Nginx をインストール
+RUN apt-get update && apt-get install -y nginx
+
+# アプリコードをコピー
 COPY . /var/www/html
 
-# Nginxの追加
-RUN apt-get update && apt-get install -y nginx
+# 開発用 Nginx 設定
 COPY ./nginx/conf.d/default-dev.conf /etc/nginx/conf.d/default.conf
 
-# 依存関係のインストール
+# PHP/Laravel & Node の依存関係をインストール
 RUN composer install --prefer-dist --no-interaction
 RUN npm install
 
-# ポート公開
 EXPOSE 80 5173
 
-# Nginx、PHP-FPM、Viteを同時に起動
-CMD ["sh", "-c", "php-fpm & npm run dev & nginx -g 'daemon off;'"]
+# すべて同時に起動（Vite + PHP-FPM + Nginx）
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["sh", "-c", "npm run dev & php-fpm & nginx -g 'daemon off;'"]
 
-# 本番用ビルドステージ
+# ==========================
+# ビルド専用ステージ (本番アーティファクト生成)
+# ==========================
 FROM base AS builder
 
-# 必要なファイルをコピー
 COPY . /var/www/html
 
-# 本番用の依存関係インストールとビルド
+# 本番用のビルド（composerは--no-dev、npmはビルドタスク実行）
 RUN composer install --optimize-autoloader --no-dev --no-interaction
 RUN npm install
 RUN npm run build
 
-# 本番用ステージ
+# ==========================
+# 本番環境ステージ
+# ==========================
 FROM base AS production
 
-# Nginx設定をコピー
+# Nginx をインストール
+RUN apt-get update && apt-get install -y nginx
+
+# ビルド済みのファイルをコピー
+COPY --from=builder /var/www/html /var/www/html
+
+# 本番用 Nginx 設定
 COPY ./nginx/conf.d/default-prod.conf /etc/nginx/conf.d/default.conf
 
-# PHP-FPM用の設定
-COPY --from=builder /var/www/html /var/www/html
+# エントリポイントスクリプトを再度配置（builder からコピーでも可）
 COPY --from=builder /usr/local/bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# 公開ポート
 EXPOSE 80
 
-# Entrypointの実行
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
