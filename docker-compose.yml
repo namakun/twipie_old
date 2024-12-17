@@ -21,19 +21,6 @@ services:
     depends_on:
       - db
 
-  webserver:
-    build:
-      context: .
-      dockerfile: server.Dockerfile
-      target: production
-    container_name: twipie_webserver
-    depends_on:
-      - app
-    ports:
-      - "8080:80"
-    networks:
-      - laravel
-
   db:
     image: mysql:8.0
     container_name: twipie_db
