@@ -80,4 +80,4 @@ EXPOSE 80
 
 # Entrypointの実行
 ENTRYPOINT ["entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
