@@ -25,6 +25,9 @@ if [ "$APP_ENV" = "production" ] && [ ! -f /var/www/html/.env ]; then
     sed -i "s|^DB_DATABASE=.*|DB_DATABASE=${DB_DATABASE}|g" /var/www/html/.env
     sed -i "s|^DB_USERNAME=.*|DB_USERNAME=${DB_USERNAME}|g" /var/www/html/.env
     sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD}|g" /var/www/html/.env
+    sed -i "s|^GOOGLE_KEY=.*|GOOGLE_KEY=${GOOGLE_KEY}|g" /var/www/html/.env
+    sed -i "s|^GOOGLE_SECRET=.*|GOOGLE_SECRET=${GOOGLE_SECRET}|g" /var/www/html/.env
+    sed -i "s|^GOOGLE_REDIRECT_URI=.*|GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}|g" /var/www/html/.env
 fi
 
 # キャッシュ用ディレクトリの作成
