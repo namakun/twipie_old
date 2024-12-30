@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GoogleLoginController;
+use App\Http\Controllers\BotSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -35,3 +36,6 @@ Route::post('/logout', function (Request $request) {
 
     return redirect()->route('home');
 })->name('logout');
+
+
+Route::get('/bot_setting', [BotSettingController::class, 'index'])->name('bot_setting');
